@@ -7,20 +7,26 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UsersService } from './users.service';
 import { User } from './interfaces/user.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
+@UseGuards(AuthGuard())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
   create(@Body() createCatDto: CreateUserDto): string {
-    return this.usersService.create(createCatDto);
+    return this.usersService.create({
+      ...createCatDto,
+      id: ''
+    });
   }
 
   @Get()
