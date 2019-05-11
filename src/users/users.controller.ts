@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';
 import { UpdateUserDto } from './dto/update.user.dto';
@@ -7,7 +16,7 @@ import { User } from './interfaces/user.interface';
 
 @Controller('users')
 export class UsersController {
-  constructor(private  readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   create(@Body() createCatDto: CreateUserDto): string {

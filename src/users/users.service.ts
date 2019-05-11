@@ -6,12 +6,12 @@ export class UsersService {
   private readonly users: User[] = [];
 
   create(user: User): string {
-    this .users.push(user);
-    return String(this .users.length - 1);
+    this.users.push(user);
+    return String(this.users.length - 1);
   }
 
   findAll(): User[] {
-    return this .users;
+    return this.users;
   }
 
   findOne(id: string) {
