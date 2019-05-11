@@ -17,7 +17,6 @@ import { User } from './interfaces/user.interface';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
-@UseGuards(AuthGuard())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -30,6 +29,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard())
   async findAll(@Query() query: ListUserQuery): Promise<User[]> {
     return this.usersService.findAll();
   }
