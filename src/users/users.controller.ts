@@ -15,12 +15,15 @@ import { UpdateUserDto } from './dto/update.user.dto';
 import { UsersService } from './users.service';
 import { User } from './interfaces/user.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiOperation({title: 'Create user'})
   async create(@Body() createCatDto: CreateUserDto): Promise<string> {
     const user = await this.usersService.create(createCatDto);
     return user.id;
