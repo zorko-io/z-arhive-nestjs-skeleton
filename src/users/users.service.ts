@@ -1,43 +1,51 @@
-import {Model} from 'mongoose'
-import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create.user.dto';
+import * as bcrypt from 'bcrypt';
+import { UserEntity } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [{email: 'test@email.com', id: '0'}];
-
-  constructor(@InjectModel('User') private readonly userModel: Model) {}
+  constructor(@InjectModel('User') private readonly userModel: Model<UserEntity>) {}
 
   async create(user: CreateUserDto): Promise<User> {
-    const createdUser = new this.userModel(user);
+    const existingUser = await this.findOneByEmail(user.email);
+    if (existingUser) {
+      throw new ConflictException('User already exists')
+    }
+    const hashPassword = await bcrypt.hash(user.password, 10);
+    const createdUser = new this.userModel({
+      ...user,
+      password: hashPassword
+    });
     const result = await createdUser.save();
-    return {
-      id: result._id.toString(),
-      email: result.email
-    };
+    return result.toUser();
   }
 
-  update(userUpdates: User): User {
+  async update(userUpdates: User): Promise<User> {
     const prevUser = this.findOne(userUpdates.id);
-    const user = {
+    return {
       ...prevUser,
       userUpdates
-    };
-    this.users[user.id] = user;
-    return user
+    }
   }
 
-  findAll(): User[] {
-    return this.users;
+  async findAll(): Promise<User[]> {
+    const models = await this.userModel.find();
+    return models.map(model => model.toUser());
   }
 
-  findOne(id: string) {
-    return this.users[id];
+  async findOne(id: string): Promise<User> {
+    const userModel = await this.userModel.findOne(id);
+    return userModel.toUser()
   }
 
-  findOneByEmail(email: string) {
-    return this.users.find(user => user.email === email);
+  async findOneByEmail(email: string): Promise<User> {
+    const userModel = await this.userModel.findOne({
+      email
+    });
+    return userModel.toUser();
   }
 }

@@ -1,5 +1,5 @@
 import {
-  Body,
+  Body, ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -7,15 +7,14 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
+  UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';
-import { UpdateUserDto } from './dto/update.user.dto';
+import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
-import { User } from './interfaces/user.interface';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiOperation, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiUseTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiUseTags('users')
@@ -33,20 +32,24 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard())
-  async findAll(@Query() query: ListUserQuery): Promise<User[]> {
-    return this.usersService.findAll();
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll(@Query() query: ListUserQuery): Promise<UserDto[]> {
+    const users = await this.usersService.findAll();
+    return users.map(user => new UserDto(user));
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard())
-  findOne(@Param('id') id): string {
-    // TODO: restrict only for admin
-    return this.usersService.findOne(id);
+  @UseGuards(AuthGuard()) // TODO: restrict only for admin
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiImplicitParam({name: 'id', required: true})
+  async findOne(@Param('id') id): Promise<UserDto> {
+    const user = await this.usersService.findOne(id);
+    return new UserDto(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard())
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateUserDto): string {
+  update(@Param('id') id: string, @Body() updateCatDto: UserDto): string {
     return `This action update #${id} user`;
   }
 
