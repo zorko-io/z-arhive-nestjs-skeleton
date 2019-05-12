@@ -21,11 +21,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createCatDto: CreateUserDto): string {
-    return this.usersService.create({
-      ...createCatDto,
-      id: ''
-    });
+  async create(@Body() createCatDto: CreateUserDto): Promise<string> {
+    const user = await this.usersService.create(createCatDto);
+    return user.id;
   }
 
   @Get()
