@@ -40,6 +40,7 @@ export class UsersController {
   @Get(':id')
   @UseGuards(AuthGuard())
   findOne(@Param('id') id): string {
+    // TODO: restrict only for admin
     return this.usersService.findOne(id);
   }
 
@@ -52,6 +53,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(AuthGuard())
   remove(@Param('id') id: string) {
+    // TODO: restrict only for admin
     return `This action removes a @${id} user`;
   }
 }
