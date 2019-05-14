@@ -25,11 +25,26 @@ export class UsersService {
   }
 
   async update(userUpdates: User): Promise<User> {
-    const prevUser = this.findOne(userUpdates.id);
-    return {
-      ...prevUser,
-      userUpdates
+
+    let password;
+
+    if (userUpdates.password) {
+      password = await bcrypt.hash(userUpdates.password, 10);
     }
+    let nextUser = await this.userModel.findById(userUpdates.id);
+
+    const response = await nextUser.updateOne(
+      {email: userUpdates.email},
+      {password: password ? password : nextUser.password}
+    );
+
+    if (response.ok) {
+      nextUser = await this.userModel.findById(userUpdates.id);
+    } else {
+      throw Error(`Can't update user`)
+    }
+
+    return nextUser.toUser();
   }
 
   async findAll(): Promise<User[]> {
@@ -37,7 +52,7 @@ export class UsersService {
     return models.map(model => model.toUser());
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOneById(id: string): Promise<User> {
     const userModel = await this.userModel.findById(id);
     return userModel.toUser()
   }

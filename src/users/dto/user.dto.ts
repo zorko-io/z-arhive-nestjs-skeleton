@@ -3,6 +3,7 @@ import { IsEmail, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 
 export class UserDto {
+  @ApiModelProperty()
   @IsString()
   id: string;
 

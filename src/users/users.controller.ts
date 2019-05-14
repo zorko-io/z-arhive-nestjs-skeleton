@@ -40,23 +40,25 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard()) // TODO: restrict only for admin
+  @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiImplicitParam({name: 'id', required: true})
   async findOne(@Param('id') id): Promise<UserDto> {
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.findOneById(id);
     return new UserDto(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard())
-  update(@Param('id') id: string, @Body() updateCatDto: UserDto): string {
-    return `This action update #${id} user`;
+  @UseInterceptors(ClassSerializerInterceptor)
+  async update(@Param('id') id: string, @Body() nextUser: UserDto): Promise<UserDto> {
+    const user = await this.usersService.update(nextUser);
+    return new UserDto(user)
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard())
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     // TODO: restrict only for admin
     return `This action removes a @${id} user`;
   }
