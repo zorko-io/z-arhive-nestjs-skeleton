@@ -38,7 +38,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const userModel = await this.userModel.findOne(id);
+    const userModel = await this.userModel.findById(id);
     return userModel.toUser()
   }
 

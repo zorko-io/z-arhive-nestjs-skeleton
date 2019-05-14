@@ -7,7 +7,8 @@ import {
   Post,
   Put,
   Query,
-  UseGuards, UseInterceptors,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';

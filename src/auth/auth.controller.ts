@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('token')
   async createToken(@Body() tokenPayloadDto: CreateTokenDto): Promise<Token> {
-    const accessKey = await this.authService.createTokenKey(tokenPayloadDto.email);
+    const accessKey = await this.authService.createTokenKey(tokenPayloadDto);
     return {
        accessKey
      };
