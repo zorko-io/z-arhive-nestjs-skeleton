@@ -4,7 +4,7 @@ import { UsersModule } from '../src/users/users.module';
 import { UsersService } from '../src/users/users.service';
 import { INestApplication } from '@nestjs/common';
 
-describe('Users', () => {
+xdescribe('Users', () => {
   let app: INestApplication;
   const usersService = { findAll: () => ['test'] };
 

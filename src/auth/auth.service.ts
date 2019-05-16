@@ -14,13 +14,24 @@ export class AuthService {
   ) {}
 
   async createTokenKey(token: CreateTokenDto): Promise<string> {
-    return this.jwtService.sign({
-      user: {
-        email: token.email,
-        password: token.password
-      },
-      expiredIn: 3600
+    const user = await this.validateUser({
+       user: {
+         email: token.email,
+         password: token.password
+       }
     });
+
+    if (user) {
+      return this.jwtService.sign({
+        user: {
+          email: token.email,
+          password: token.password
+        },
+        expiredIn: 3600
+      });
+    } else {
+      return ''
+    }
   }
 
   async validateUser(payload: JwtPayload): Promise<User | null> {
