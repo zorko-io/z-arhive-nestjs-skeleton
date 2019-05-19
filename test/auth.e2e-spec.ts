@@ -1,11 +1,12 @@
 import * as request from 'supertest';
+import {Server, Users} from './test.configs'
 
 describe('Auth', () => {
 
   it('passes login', done => {
-    return request('http://localhost:3000')
+    return request(Server.baseUrl)
       .post('/auth/token')
-      .send({email: 'test@email.com', password: '1234567'})
+      .send(Users.JoeUser)
       .expect(201)
       .end((err, req) => {
          if (err) {
@@ -18,7 +19,7 @@ describe('Auth', () => {
   });
 
   it('fails login', done => {
-    return request('http://localhost:3000')
+    return request(Server.baseUrl)
       .post('/auth/token')
       .send({email: 'nosuch@user.com', password: '1dsa12313'})
       .expect(403)
