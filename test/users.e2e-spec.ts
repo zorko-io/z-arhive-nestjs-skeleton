@@ -1,24 +1,36 @@
-import * as request from 'supertest';
+import { AuthHeader, request } from './request';
 import { Server, Users } from './test.configs';
+import * as faker from 'faker';
 
 describe('Users', () => {
-  let token;
+  let user;
+
   beforeAll(() => {
-    return request(Server.baseUrl)
-              .post('/auth/token')
-              .send(Users.JoeUser)
-              .then(res => {
-                 token = res.body;
-              })
+     user = {
+       email: faker.internet.email(),
+       password: faker.internet.password()
+     }
   });
 
   it('/GET users', () => {
-    return request(Server.baseUrl)
+    return request
       .get('/users')
-      .set('Authorization', `Bearer ${token.accessKey}`)
+      .set(AuthHeader.Key, AuthHeader.Value)
       .expect(200)
       .then(res => {
         expect(res.body.length).toBeGreaterThan(0);
+      })
+  });
+
+  it('/POST users create new user', () => {
+    return request
+      .post('/users')
+      .set(AuthHeader.Key, AuthHeader.Value)
+      .send(user)
+      .expect(201)
+      .then(res => {
+        expect(res.text.length).toBeGreaterThan(0);
+        user.id = res.text;
       })
   });
 });

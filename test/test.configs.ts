@@ -7,7 +7,8 @@ const Users  = {
   JoeUser : {
     email: 'test@email.com',
     password: '1234567'
-  }
+  },
+
 };
 
 

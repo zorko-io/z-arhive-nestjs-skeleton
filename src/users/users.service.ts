@@ -57,11 +57,11 @@ export class UsersService {
     return userModel.toUser()
   }
 
-  async findOneByEmail(email: string): Promise<User> {
+  async findOneByEmail(email: string): Promise<User | undefined> {
     const userModel = await this.userModel.findOne({
       email
     });
 
-    return userModel.toUser();
+    return userModel ? userModel.toUser() : undefined;
   }
 }
