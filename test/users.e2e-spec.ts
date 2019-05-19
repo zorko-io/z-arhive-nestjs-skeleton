@@ -1,33 +1,24 @@
 import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
-import { UsersModule } from '../src/users/users.module';
-import { UsersService } from '../src/users/users.service';
-import { INestApplication } from '@nestjs/common';
+import { Server, Users } from './test.configs';
 
-xdescribe('Users', () => {
-  let app: INestApplication;
-  const usersService = { findAll: () => ['test'] };
-
-  beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [UsersModule]
-    })
-      .overrideProvider(UsersService)
-      .useValue(usersService)
-      .compile();
-
-    app = module.createNestApplication();
-    await app.init();
+describe('Users', () => {
+  let token;
+  beforeAll(() => {
+    return request(Server.baseUrl)
+              .post('/auth/token')
+              .send(Users.JoeUser)
+              .then(res => {
+                 token = res.body;
+              })
   });
 
   it('/GET users', () => {
-    return request(app.getHttpServer())
+    return request(Server.baseUrl)
       .get('/users')
+      .set('Authorization', `Bearer ${token.accessKey}`)
       .expect(200)
-      .expect(usersService.findAll())
+      .then(res => {
+        expect(res.body.length).toBeGreaterThan(0);
+      })
   });
-
-  afterAll(async () => {
-    await app.close();
-  })
 });

@@ -61,6 +61,7 @@ export class UsersService {
     const userModel = await this.userModel.findOne({
       email
     });
+
     return userModel.toUser();
   }
 }
