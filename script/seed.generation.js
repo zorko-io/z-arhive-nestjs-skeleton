@@ -18,7 +18,7 @@ async function generateUsers(usersCount) {
   return users;
 }
 
-generateUsers(10000)
+generateUsers(10)
   .then(users => {
     fs.writeFileSync(path.join('seed', 'users.json'), JSON.stringify(users, null, 2));
   });

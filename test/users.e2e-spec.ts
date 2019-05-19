@@ -1,5 +1,5 @@
 import { AuthHeader, request } from './request';
-import { Server, Users } from './test.configs';
+import { Users } from './test.configs';
 import * as faker from 'faker';
 
 describe('Users', () => {
@@ -22,7 +22,7 @@ describe('Users', () => {
       })
   });
 
-  it('/POST users create new user', () => {
+  it('/POST users - create new user',  () => {
     return request
       .post('/users')
       .set(AuthHeader.Key, AuthHeader.Value)
@@ -31,6 +31,18 @@ describe('Users', () => {
       .then(res => {
         expect(res.text.length).toBeGreaterThan(0);
         user.id = res.text;
+      })
+  });
+
+  it('/GET users - read user by id', () => {
+    return request
+      .get(`/users/${user.id}`)
+      .set(AuthHeader.Key, AuthHeader.Value)
+      .expect(200)
+      .then(res => {
+        expect(res.body.email).toEqual(user.email);
+        expect(res.body.id).toEqual(user.id);
+        expect(res.body.password).not.toBeDefined();
       })
   });
 });
