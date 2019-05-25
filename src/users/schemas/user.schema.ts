@@ -16,10 +16,14 @@ export const UserSchema = new mongoose.Schema<UserEntity>({
 UserSchema.methods.toUser = function() {
    const result = this.toJSON();
 
+   if (!result) {
+      return;
+   }
+
    assert(result.email, 'User should have email');
    assert(result.password, 'User should have password');
 
-   return {
+   return  {
       id: result._id.toString(),
       email: result.email,
       password: result.password

@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create.user.dto';
@@ -15,6 +15,7 @@ export class UsersService {
     if (existingUser) {
       throw new ConflictException('User already exists')
     }
+    // TODO: move to model layer
     const hashPassword = await bcrypt.hash(user.password, 10);
     const createdUser = new this.userModel({
       ...user,
@@ -28,6 +29,7 @@ export class UsersService {
 
     let password;
 
+    // TODO: move to model layer
     if (userUpdates.password) {
       password = await bcrypt.hash(userUpdates.password, 10);
     }
@@ -47,14 +49,22 @@ export class UsersService {
     return nextUser.toUser();
   }
 
+  async remove(id: string): Promise<void> {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new NotFoundException(`Can't find user by #id: ${id}`)
+    }
+    await this.userModel.remove({_id: id});
+  }
+
   async findAll(): Promise<User[]> {
     const models = await this.userModel.find();
     return models.map(model => model.toUser());
   }
 
-  async findOneById(id: string): Promise<User> {
+  async findOneById(id: string): Promise<User | undefined> {
     const userModel = await this.userModel.findById(id);
-    return userModel.toUser()
+    return userModel && userModel.toUser()
   }
 
   async findOneByEmail(email: string): Promise<User | undefined> {
@@ -62,6 +72,6 @@ export class UsersService {
       email
     });
 
-    return userModel ? userModel.toUser() : undefined;
+    return userModel &&  userModel.toUser();
   }
 }

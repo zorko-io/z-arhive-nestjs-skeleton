@@ -1,6 +1,7 @@
 import { AuthHeader, request } from './request';
 import { Users } from './test.configs';
 import * as faker from 'faker';
+import _ = require('lodash');
 
 describe('Users', () => {
   let user;
@@ -44,5 +45,24 @@ describe('Users', () => {
         expect(res.body.id).toEqual(user.id);
         expect(res.body.password).not.toBeDefined();
       })
+  });
+
+  it('/DELETE users - delete user by id', async () => {
+    return  request
+      .delete(`/users/${user.id}`)
+      .set(AuthHeader.Key, AuthHeader.Value)
+      .expect(200)
+      .then(res => {
+
+        expect(_.isEmpty(res.body)).toBeTruthy();
+
+        return request
+          .get(`/users/${user.id}`)
+          .set(AuthHeader.Key, AuthHeader.Value)
+          .expect(404)
+          .catch( err => {
+            expect(err).toBeDefined();
+          });
+      });
   });
 });

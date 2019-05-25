@@ -58,8 +58,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(AuthGuard())
-  async remove(@Param('id') id: string) {
-    // TODO: restrict only for admin
-    return `This action removes a @${id} user`;
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.usersService.remove(id);
   }
 }
