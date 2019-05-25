@@ -16,6 +16,8 @@ import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiUseTags } from '@nestjs/swagger';
+import { RolesEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @ApiBearerAuth()
 @ApiUseTags('users')
@@ -26,6 +28,7 @@ export class UsersController {
   @Post()
   @ApiOperation({title: 'Create user'})
   @UseGuards(AuthGuard())
+  @Roles(RolesEnum.Admin)
   async create(@Body() createCatDto: CreateUserDto): Promise<string> {
     const user = await this.usersService.create(createCatDto);
     return user.id;

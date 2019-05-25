@@ -1,14 +1,13 @@
+// @ts-ignore
+import initUsers from '../seed/init.users.json'
+
 const Server = {
   baseUrl: 'http://localhost:3000'
 };
 
-
 const Users  = {
-  JoeUser : {
-    email: 'test@email.com',
-    password: '1234567'
-  },
-
+  JoeUser : [0],
+  AdminUser : [1]
 };
 
 
