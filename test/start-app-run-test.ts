@@ -4,24 +4,39 @@ import * as path from 'path';
 
 async function loadInitialData() {
 
-  const deleteCount = await Api.Users.removeUsers();
+  Api.setConfig({baseURL: 'http://localhost:3000'});
 
-  // tslint:disable-next-line:no-console
-  console.log(`Cleaned up all users: #deleteCount: ${deleteCount}`);
+  try {
+    const deleteCount = await Api.Users.removeUsers();
 
-  let initUsers: any = fs.readFileSync(
-    path.join('seed', 'init.users.json'),
-  );
+    // tslint:disable-next-line:no-console
+    console.log(`Cleaned up all users: #deleteCount: ${deleteCount}`);
 
-  initUsers = JSON.stringify(initUsers.toString());
+    let initUsers: any = fs.readFileSync(
+      path.join('seed', 'init.users.json'),
+    );
 
-  const result = await Promise.all([
-    Api.User.createUser(initUsers[0]),
-    Api.User.createUser(initUsers[1])
-  ]);
+    initUsers = JSON.parse(initUsers.toString());
 
-  // tslint:disable-next-line:no-console
-  console.log(`Create initial users: #usersCount: ${result}`);
+    // tslint:disable-next-line:no-console
+    console.log('INIT_USERS', initUsers);
+
+    const result = await Promise.all([
+      Api.User.createUser(initUsers[0]),
+      Api.User.createUser(initUsers[1])
+    ]);
+
+    // tslint:disable-next-line:no-console
+    console.log(`Create initial users #ids: ${result}`);
+  } catch (error) {
+    if (error.response) {
+      // tslint:disable-next-line:no-console
+      console.error('Loading was failed', {
+        statusCode: error.response.data.statusCode,
+        message: error.response.data.message
+      });
+    }
+  }
 }
 
 loadInitialData();
