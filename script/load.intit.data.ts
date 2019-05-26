@@ -4,7 +4,7 @@ import * as path from 'path';
 
 async function loadInitialData() {
 
-  Api.setConfig({baseURL: 'http://localhost:3000'});
+  Api.setConfig({ baseURL: 'http://localhost:3000' });
 
   try {
     const deleteCount = await Api.Users.removeUsers();
@@ -19,24 +19,27 @@ async function loadInitialData() {
     initUsers = JSON.parse(initUsers.toString());
 
     // tslint:disable-next-line:no-console
-    console.log('INIT_USERS', initUsers);
+    console.log(`Let's create few users: #newUsersCount ${initUsers.length}`);
 
-    const result = await Promise.all([
-      Api.User.createUser(initUsers[0]),
-      Api.User.createUser(initUsers[1])
-    ]);
+    const result = await Promise.all(
+      initUsers.map(user => Api.User.createUser(user))
+    );
 
     // tslint:disable-next-line:no-console
-    console.log(`Create initial users #ids: ${result}`);
+    console.log(`Created initial users, #newUsersIds: ${result.join(',')}`);
   } catch (error) {
     if (error.response) {
       // tslint:disable-next-line:no-console
       console.error('Loading was failed', {
         statusCode: error.response.data.statusCode,
-        message: error.response.data.message
+        message: error.response.data.message,
       });
+    } else {
+      // tslint:disable-next-line:no-console
+      console.error('Loading was failed');
     }
   }
 }
 
 loadInitialData();
+
