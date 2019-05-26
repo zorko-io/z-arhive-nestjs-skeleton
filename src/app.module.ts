@@ -6,10 +6,16 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
+
+// TODO: find on how to reuse once created
+const configService = new ConfigService();
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/zorko'),
+    ConfigModule,
+    MongooseModule.forRoot(configService.get('MONGO_URL')),
     AuthModule,
     UsersModule
   ],

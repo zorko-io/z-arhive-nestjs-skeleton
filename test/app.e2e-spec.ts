@@ -1,23 +1,30 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AuthHeader } from './request';
+import { Server } from './test.configs';
+import { bootstrap } from '../src/app';
 
-xdescribe('AppController (e2e)', () => {
+describe('AppController (e2e)', () => {
   let app;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+  beforeAll(async () => {
+    process.env.API_AUTH_ENABLED = 'false';
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    app = await bootstrap();
+
+    return app;
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
+  it('/GET users', () => {
+    return request(Server.baseUrl)
+      .get('/users')
+      .set(AuthHeader.Key, AuthHeader.Value)
       .expect(200)
-      .expect('Hello World!');
+      .then(res => {
+        expect(res.body.length).toBeGreaterThan(0);
+      })
   });
+
+  afterAll(async () => {
+    return app.close();
+  })
 });

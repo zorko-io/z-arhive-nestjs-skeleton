@@ -19,7 +19,7 @@ export class AuthController {
     const user = await this.userService.findOneByEmail(tokenPayloadDto.email);
     return {
        accessKey,
-       userId: user.id
+       userId: user ? user.id : ''
      };
   }
 }

@@ -10,7 +10,8 @@ export interface UserEntity extends User, Document {
 
 export const UserSchema = new mongoose.Schema<UserEntity>({
    email: {type: String, unique: true, required: true},
-   password: {type: String, required: true}
+   password: {type: String, required: true},
+   roles: {type: Array, required: true}
 });
 
 UserSchema.methods.toUser = function() {
@@ -26,6 +27,7 @@ UserSchema.methods.toUser = function() {
    return  {
       id: result._id.toString(),
       email: result.email,
-      password: result.password
+      password: result.password,
+      roles: result.roles
    };
 };

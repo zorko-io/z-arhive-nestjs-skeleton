@@ -14,10 +14,10 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiUseTags } from '@nestjs/swagger';
 import { RolesEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
+import { JwtAuthGuard } from '../auth/auth.guard';
 
 @ApiBearerAuth()
 @ApiUseTags('users')
@@ -27,7 +27,7 @@ export class UsersController {
 
   @Post()
   @ApiOperation({title: 'Create user'})
-  @UseGuards(AuthGuard())
+  @UseGuards(new JwtAuthGuard())
   @Roles(RolesEnum.Admin)
   async create(@Body() createCatDto: CreateUserDto): Promise<string> {
     const user = await this.usersService.create(createCatDto);
@@ -35,7 +35,7 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard())
+  @UseGuards(new JwtAuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   async findAll(@Query() query: ListUserQuery): Promise<UserDto[]> {
     const users = await this.usersService.findAll();
@@ -43,7 +43,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard())
+  @UseGuards(new JwtAuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiImplicitParam({name: 'id', required: true})
   async findOne(@Param('id') id): Promise<UserDto> {
@@ -52,7 +52,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard())
+  @UseGuards(new JwtAuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   async update(@Param('id') id: string, @Body() nextUser: UserDto): Promise<UserDto> {
     const user = await this.usersService.update(nextUser);
@@ -60,7 +60,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard())
+  @UseGuards(new JwtAuthGuard())
   async remove(@Param('id') id: string): Promise<void> {
     await this.usersService.remove(id);
   }
