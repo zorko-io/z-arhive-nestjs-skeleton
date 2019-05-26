@@ -1,21 +1,27 @@
-import { bootstrap } from '../src/app';
-import * as request from 'supertest';
+import * as Api from '../src/client';
+import * as fs from 'fs';
+import * as path from 'path';
 
-async function setup() {
+async function loadInitialData() {
 
-  process.env.API_AUTH_ENABLED = 'false';
+  const deleteCount = await Api.Users.removeUsers();
 
-  const app = await bootstrap();
+  // tslint:disable-next-line:no-console
+  console.log(`Cleaned up all users: #deleteCount: ${deleteCount}`);
 
-  await request('http:localhost:3000')
-    .get('/users')
-    .expect(200)
-    .then(res => {
-      expect(res.body.length).toBeGreaterThan(0);
-    });
+  let initUsers: any = fs.readFileSync(
+    path.join('seed', 'init.users.json'),
+  );
 
-  await app.close();
+  initUsers = JSON.stringify(initUsers.toString());
+
+  const result = await Promise.all([
+    Api.User.createUser(initUsers[0]),
+    Api.User.createUser(initUsers[1])
+  ]);
+
+  // tslint:disable-next-line:no-console
+  console.log(`Create initial users: #usersCount: ${result}`);
 }
 
-
-setup();
+loadInitialData();
