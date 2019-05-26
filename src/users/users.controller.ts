@@ -61,7 +61,16 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(new JwtAuthGuard())
+  @ApiOperation({title: 'Remove user'})
   async remove(@Param('id') id: string): Promise<void> {
     await this.usersService.remove(id);
+  }
+
+  @Delete()
+  @UseGuards(new JwtAuthGuard())
+  @Roles(RolesEnum.Admin)
+  @ApiOperation({title: 'Bulk remove users'})
+  async bulkRemove(): Promise<number> {
+    return await this.usersService.removeAll();
   }
 }

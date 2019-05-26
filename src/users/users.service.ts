@@ -57,6 +57,11 @@ export class UsersService {
     await this.userModel.remove({_id: id});
   }
 
+  async removeAll(): Promise<number> {
+     const result = await this.userModel.deleteMany({});
+     return result.n;
+  }
+
   async findAll(): Promise<User[]> {
     const models = await this.userModel.find();
     return models.map(model => model.toUser());
@@ -74,4 +79,5 @@ export class UsersService {
 
     return userModel &&  userModel.toUser();
   }
+
 }
