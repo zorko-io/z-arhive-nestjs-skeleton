@@ -3,7 +3,7 @@ import { AuthHeader } from './request';
 import { Server } from './test.configs';
 import { bootstrap } from '../src/app';
 
-describe('AppController (e2e)', () => {
+xdescribe('AppController (e2e)', () => {
   let app;
 
   beforeAll(async () => {
