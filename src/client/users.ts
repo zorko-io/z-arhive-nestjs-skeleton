@@ -10,3 +10,8 @@ export async function removeUsers(users: User[] = []): Promise<number> {
   return response.data
 }
 
+export async function fetchUsers(): Promise<User[]> {
+  const response: AxiosResponse<User[]> = await axios.get('/users');
+  return response.data
+}
+

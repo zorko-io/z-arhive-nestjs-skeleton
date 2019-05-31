@@ -39,7 +39,7 @@ export class AuthService {
 
     let match;
 
-    if (payload.user && payload.user.password) {
+    if (user && payload.user && payload.user.password) {
      match = await bcrypt.compare(payload.user.password, user.password);
     }
 

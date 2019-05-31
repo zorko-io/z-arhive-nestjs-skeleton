@@ -1,26 +1,21 @@
 // import { AuthHeader, request } from './request';
-import { Users, Server } from './setup.e2e.config';
+import { Users, Tokens } from './setup.e2e.config';
 import * as faker from 'faker';
 import * as _ from 'lodash';
 import * as Api from '../src/client'
 
-xdescribe('Users', () => {
-  // let user;
-  //
-  // beforeAll(() => {
-  //    user = Users.AdminUser;
-  //   Api.setConfig({baseURL: Server.baseUrl, token: })
-  // });
+describe('Users', () => {
+  describe('Admin', () => {
+    it('/GET users', async () => {
+      Api.setConfig({token: Tokens.AdminUserToken});
 
-  // it('/GET users', () => {
-  //   return request
-  //     .get('/users')
-  //     .set(AuthHeader.Key, AuthHeader.Value)
-  //     .expect(200)
-  //     .then(res => {
-  //       expect(res.body.length).toBeGreaterThan(0);
-  //     })
-  // });
+      const users = await Api.Users.fetchUsers();
+
+      expect(users.length > 0);
+    });
+  });
+
+
 
   // it('/POST users - create new user',  () => {
   //   return request
