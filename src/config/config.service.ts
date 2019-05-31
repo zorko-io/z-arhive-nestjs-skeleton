@@ -9,7 +9,12 @@ export class ConfigService {
   private readonly envConfig: { [key: string]: string };
 
   constructor(filePath: string = `.env.${process.env.NODE_ENV}`) {
-    this.envConfig = dotenv.parse(fs.readFileSync(filePath))
+    if (fs.existsSync(filePath)) {
+      this.envConfig = dotenv.parse(fs.readFileSync(filePath));
+    } else {
+      this.envConfig = {};
+    }
+
     // TODO: validate config
   }
 
@@ -26,9 +31,9 @@ export class ConfigService {
     if (apiAuthEnableFlag === 'true') {
       return true;
     } else if (apiAuthEnableFlag === 'false') {
-      return false
+      return false;
     } else {
-      return  true;
+      return true;
     }
   }
 }

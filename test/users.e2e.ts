@@ -1,16 +1,15 @@
 // import { AuthHeader, request } from './request';
-import { Users } from './test.configs';
+import { Users, Server } from './setup.e2e.config';
 import * as faker from 'faker';
-import _ = require('lodash');
+import * as _ from 'lodash';
+import * as Api from '../src/client'
 
 xdescribe('Users', () => {
-  let user;
-
+  // let user;
+  //
   // beforeAll(() => {
-  //    user = {
-  //      email: faker.internet.email(),
-  //      password: faker.internet.password()
-  //    }
+  //    user = Users.AdminUser;
+  //   Api.setConfig({baseURL: Server.baseUrl, token: })
   // });
 
   // it('/GET users', () => {

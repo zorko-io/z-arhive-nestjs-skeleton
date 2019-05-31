@@ -1,12 +1,7 @@
-import { Server, Users } from './test.configs';
+import { Users } from './setup.e2e.config';
 import * as Api from '../src/client';
 
 describe('Auth', () => {
-
-  beforeAll(async () => {
-    Api.setConfig({baseURL: Server.baseUrl})
-  });
-
   it('creates token', async () => {
     let token = await Api.Auth.createToken(Users.JoeUser);
 
@@ -29,5 +24,4 @@ describe('Auth', () => {
       expect(error).toBeDefined();
     }
   });
-
 });

@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import { Server, Users } from './test.configs';
+import { Server, Users } from './setup.e2e.config';
 
 const agent = request.agent(Server.baseUrl);
 const AuthHeader = {
