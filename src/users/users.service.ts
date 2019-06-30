@@ -5,6 +5,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create.user.dto';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './schemas/user.schema';
+import { RolesEnum } from '../roles/roles.enum';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,17 +17,21 @@ export class UsersService {
     if (existingUser) {
       throw new ConflictException('User already exists')
     }
+
+    const hasRoles = user.roles ? user.roles : false;
+
     // TODO: move to model layer
     const hashPassword = await bcrypt.hash(user.password, 10);
     const createdUser = new this.userModel({
       ...user,
-      password: hashPassword
+      password: hashPassword,
+      roles: hasRoles ? user.roles : [RolesEnum.User]
     });
     const result = await createdUser.save();
     return result.toUser();
   }
 
-  async update(userUpdates: User): Promise<User> {
+  async update(userUpdates: UserDto): Promise<User> {
 
     let password;
 

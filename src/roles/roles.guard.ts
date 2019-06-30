@@ -8,7 +8,7 @@ import { ConfigService } from '../config/config.service';
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
-    private  readonly reflector: Reflector,
+    private readonly reflector: Reflector,
     private readonly configService: ConfigService
   ) {}
 

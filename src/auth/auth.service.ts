@@ -15,32 +15,28 @@ export class AuthService {
 
   async createTokenKey(token: CreateTokenDto): Promise<string> {
     const user = await this.validateUser({
-       user: {
          email: token.email,
-         password: token.password
-       }
+         password: token.password,
     });
 
     if (user) {
       return this.jwtService.sign({
-        user: {
           email: token.email,
-          password: token.password
-        },
-        expiredIn: 3600
-      });
+          password: token.password,
+          roles: user.roles
+      }, {expiresIn: 3600});
     } else {
       return ''
     }
   }
 
   async validateUser(payload: JwtPayload): Promise<User | null> {
-    const user = await this.usersService.findOneByEmail(payload.user.email);
+    const user = await this.usersService.findOneByEmail(payload.email);
 
     let match;
 
-    if (user && payload.user && payload.user.password) {
-     match = await bcrypt.compare(payload.user.password, user.password);
+    if (user && payload && payload.password) {
+     match = await bcrypt.compare(payload.password, user.password);
     }
 
     return match ? user : null;

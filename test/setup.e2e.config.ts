@@ -24,16 +24,5 @@ const Tokens = {
   AdminUserToken: ''
 };
 
-beforeAll(async () => {
-  Api.setConfig({baseURL: Server.baseUrl});
-
-  let token  = await Api.Auth.createToken(Users.JoeUser);
-  Tokens.JoeUserToken = token.accessKey;
-
-  token  = await Api.Auth.createToken(Users.AdminUser);
-  Tokens.AdminUserToken = token.accessKey;
-});
-
-
 export {Users, Server, Tokens}
 

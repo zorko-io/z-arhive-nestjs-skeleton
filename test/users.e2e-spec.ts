@@ -1,21 +1,49 @@
 // import { AuthHeader, request } from './request';
-import { Users, Tokens } from './setup.e2e.config';
+import { Users, Server } from './setup.e2e.config';
 import * as faker from 'faker';
-import * as _ from 'lodash';
-import * as Api from '../src/client'
+import {ApiClient} from '../src/client'
+import { RolesEnum } from '../src/roles/roles.enum';
+// import * as TestHelper from './testHelpers';
 
 describe('Users', () => {
   describe('Admin', () => {
+    let user;
+    let userId;
+    let Api;
+
+    beforeAll(async () => {
+      Api = new ApiClient(Server.baseUrl);
+      Api = await Api.loginAs(Users.AdminUser);
+
+      user = {
+         email: faker.internet.email(),
+         password: faker.internet.password()
+      };
+
+      // tslint:disable-next-line:no-console
+      console.log('setup auth');
+    });
+
     it('/GET users', async () => {
-      Api.setConfig({token: Tokens.AdminUserToken});
+      const users = await Api.User.fetchUsers();
 
-      const users = await Api.Users.fetchUsers();
+      expect(users && users.length > 0).toBeTruthy();
+    });
 
-      expect(users.length > 0);
+    it('CRUD - user', async () => {
+      // tslint:disable-next-line:no-console
+      console.log('before create user');
+      userId = await Api.User.createUser(user);
+      expect(userId && userId.length > 0).toBeTruthy();
+
+      const actualUser = await Api.User.fetchUserById(userId);
+      expect(actualUser).toEqual({
+        id: userId,
+        email: user.email,
+        roles: [RolesEnum.User]
+      });
     });
   });
-
-
 
   // it('/POST users - create new user',  () => {
   //   return request

@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsArray, IsEmail, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsOptional, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { RolesEnum } from '../../roles/roles.enum';
 
@@ -13,11 +13,12 @@ export class UserDto {
   email: string;
 
   @Exclude()
-  password: string;
+  password?: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({required: false})
   @IsArray()
-  roles: RolesEnum[];
+    // TODO: how to exclude it from user when it was requested by not an admin?
+  roles?: RolesEnum[];
 
   constructor(partial: Partial<UserDto>) {
     Object.assign(this, partial);

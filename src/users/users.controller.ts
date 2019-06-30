@@ -1,15 +1,4 @@
-import {
-  Body, ClassSerializerInterceptor,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ListUserQuery } from './dto/list.user.query';
 import { UserDto } from './dto/user.dto';
@@ -17,7 +6,9 @@ import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiUseTags } from '@nestjs/swagger';
 import { RolesEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
-import { JwtAuthGuard } from '../auth/auth.guard';
+// import { JwtAuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../roles/roles.guard';
 
 @ApiBearerAuth()
 @ApiUseTags('users')
@@ -25,9 +16,10 @@ import { JwtAuthGuard } from '../auth/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
   @Post()
   @ApiOperation({title: 'Create user'})
-  @UseGuards(new JwtAuthGuard())
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RolesEnum.Admin)
   async create(@Body() createCatDto: CreateUserDto): Promise<string> {
     const user = await this.usersService.create(createCatDto);
@@ -35,8 +27,7 @@ export class UsersController {
   }
 
   @Get()
-  // TODO: fix auth guard
-  // @UseGuards(new JwtAuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async findAll(@Query() query: ListUserQuery): Promise<UserDto[]> {
     const users = await this.usersService.findAll();

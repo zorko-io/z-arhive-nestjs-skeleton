@@ -22,10 +22,6 @@ const configService = new ConfigService();
   controllers: [
     UsersController
   ],
-  providers: [
-    AppService, {
-    provide: APP_GUARD,
-    useClass: RolesGuard
-  }],
+  providers: [AppService],
 })
 export class AppModule {}

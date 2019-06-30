@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { RolesEnum } from '../../roles/roles.enum';
 
@@ -13,6 +13,7 @@ export class CreateUserDto {
   readonly password: string;
 
   @ApiModelProperty()
+  @IsOptional()
   @IsArray()
-  readonly roles: RolesEnum[];
+  readonly roles?: RolesEnum[];
 }
