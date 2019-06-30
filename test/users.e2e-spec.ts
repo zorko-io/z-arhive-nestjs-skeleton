@@ -19,9 +19,6 @@ describe('Users', () => {
          email: faker.internet.email(),
          password: faker.internet.password()
       };
-
-      // tslint:disable-next-line:no-console
-      console.log('setup auth');
     });
 
     it('/GET users', async () => {

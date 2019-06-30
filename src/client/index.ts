@@ -22,7 +22,8 @@ function resetAuthorization() {
   axios.defaults.headers.common.Authorization = '';
 }
 
-class AuthApiClient {
+// tslint:disable-next-line:max-classes-per-file
+export class AuthApiClient {
   private axiosInstance: AxiosInstance;
 
   constructor(axiosInstance: AxiosInstance) {
