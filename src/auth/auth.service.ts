@@ -5,12 +5,15 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { CreateTokenDto } from './dto/create.token.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/interfaces/user.interface';
+import { ConfigService } from '../config/config.service';
+import { RolesEnum } from '../roles/roles.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService
   ) {}
 
   async createTokenKey(token: CreateTokenDto): Promise<string> {
@@ -31,6 +34,16 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User | null> {
+
+    if (!this.configService.isAuthEnabled) {
+      return {
+        id: '1',
+        email: 'test@zorko.io',
+        password: 'qwerty',
+        roles: []
+      }
+    }
+
     const user = await this.usersService.findOneByEmail(payload.email);
 
     let match;

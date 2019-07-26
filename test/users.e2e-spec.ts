@@ -1,18 +1,17 @@
-// import { AuthHeader, request } from './request';
-import { Users, Server } from './setup.e2e.config';
+import { Users } from './config';
 import * as faker from 'faker';
-import {ApiClient} from '../src/client'
 import { RolesEnum } from '../src/roles/roles.enum';
-// import * as TestHelper from './testHelpers';
+import { ApiTestHelper } from './helper/api.test.helper';
 
 describe('Users', () => {
+
   describe('Admin', () => {
     let user;
     let userId;
     let Api;
 
     beforeAll(async () => {
-      Api = new ApiClient(Server.baseUrl);
+      Api = ApiTestHelper.create();
       Api = await Api.loginAs(Users.AdminUser);
 
       user = {

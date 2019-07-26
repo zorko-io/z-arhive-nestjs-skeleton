@@ -6,7 +6,6 @@ import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiUseTags } from '@nestjs/swagger';
 import { RolesEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
-// import { JwtAuthGuard } from '../auth/auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 
@@ -63,7 +62,7 @@ export class UsersController {
 
   @Delete()
   // TODO: fix auth guard
-  // @UseGuards(new JwtAuthGuard())
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RolesEnum.Admin)
   @ApiOperation({title: 'Bulk remove users'})
   async bulkRemove(): Promise<number> {

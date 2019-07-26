@@ -1,23 +1,20 @@
-import { Server, Users } from './setup.e2e.config';
-import { AuthApiClient } from '../src/client';
-import axios from 'axios';
+import { Users } from './config';
+import { ApiTestHelper } from './helper/api.test.helper';
 
 describe('Auth', () => {
-  let auth;
+  let Api;
 
   beforeAll(async () => {
-    auth = new AuthApiClient(axios.create({
-      baseURL: Server.baseUrl,
-    }));
+    Api = ApiTestHelper.create();
   });
 
   it('creates token', async () => {
-    let token = await auth.createToken(Users.JoeUser);
+    let token = await Api.Auth.createToken(Users.JoeUser);
 
     expect(token.accessKey.length).toBeGreaterThan(0);
     expect(token.userId.length).toBeGreaterThan(0);
 
-    token = await auth.createToken(Users.AdminUser);
+    token = await Api.Auth.createToken(Users.AdminUser);
 
     expect(token.accessKey.length).toBeGreaterThan(0);
     expect(token.userId.length).toBeGreaterThan(0);
@@ -28,7 +25,7 @@ describe('Auth', () => {
     const noneUser = {email: 'nosuch@user.com', password: '1dsa12313'};
 
     try {
-      await auth.createToken(noneUser);
+      await Api.Auth.createToken(noneUser);
     } catch (error) {
       expect(error).toBeDefined();
     }

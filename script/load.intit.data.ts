@@ -1,4 +1,4 @@
-import * as Api from '../src/client';
+import Api from '../src/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -6,8 +6,14 @@ async function loadInitialData() {
 
   Api.setConfig({ baseURL: 'http://localhost:3000' });
 
+  // Auth should be turned off on the server, so any login/pw would work
+  await Api.loginAs({
+    email: 'test@example.com',
+    password: 'test123'
+  });
+
   try {
-    const deleteCount = await Api.Users.removeUsers();
+    const deleteCount = await Api.User.removeUsers();
 
     // tslint:disable-next-line:no-console
     console.log(`Cleaned up all users: #deleteCount: ${deleteCount}`);

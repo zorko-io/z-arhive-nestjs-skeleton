@@ -1,7 +1,3 @@
-// @ts-ignore
-import initUsers from '../seed/init.users.json'
-import * as Api from '../src/client';
-
 const Server = {
   baseUrl: 'http://localhost:3000'
 };
@@ -19,10 +15,5 @@ const Users  = {
   }
 };
 
-const Tokens = {
-  JoeUserToken: '',
-  AdminUserToken: ''
-};
-
-export {Users, Server, Tokens}
+export { Users, Server }
 
