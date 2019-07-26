@@ -41,6 +41,7 @@ describe('Users', () => {
     });
   });
 
+  // TODO: uncomment test cases and actually test them
   // it('/POST users - create new user',  () => {
   //   return request
   //     .post('/users')
